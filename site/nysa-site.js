@@ -7,14 +7,9 @@
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
-  const app =
-    document.getElementById("nysa-app") ||
-    (() => {
-      const el = document.createElement("div");
-      el.id = "nysa-app";
-      document.body.appendChild(el);
-      return el;
-    })();
+  const nativePage =
+    document.body &&
+    document.body.hasAttribute("data-nysa-native-page");
 
   document.body.classList.add("nysa-bg-grid");
 
@@ -545,6 +540,14 @@
   }
 
   function mount() {
+    const app =
+      document.getElementById("nysa-app") ||
+      (() => {
+        const el = document.createElement("div");
+        el.id = "nysa-app";
+        document.body.appendChild(el);
+        return el;
+      })();
     let html = "";
     const querySlug = new URLSearchParams(window.location.search).get("slug");
 
@@ -577,32 +580,47 @@
   }
 
   function loadLazyVideo() {
-    const video = document.querySelector("[data-video-lazy]");
-    if (!video || prefersReducedMotion) return;
+    const videos = Array.prototype.slice.call(
+      document.querySelectorAll("[data-video-lazy]")
+    );
+    if (!videos.length || prefersReducedMotion) return;
 
-    const activate = function () {
-      Array.prototype.forEach.call(video.querySelectorAll("source"), function (source) {
-        if (source.dataset.src) source.src = source.dataset.src;
-      });
-      video.load();
-      video.addEventListener("canplay", function () {
-        video.classList.add("is-ready");
-      });
-    };
+    videos.forEach(function (video) {
+      const activate = function () {
+        Array.prototype.forEach.call(
+          video.querySelectorAll("source"),
+          function (source) {
+            if (source.dataset.src) source.src = source.dataset.src;
+          }
+        );
+        video.load();
+        video.addEventListener(
+          "canplay",
+          function () {
+            video.classList.add("is-ready");
+          },
+          { once: true }
+        );
+      };
 
-    if (!("IntersectionObserver" in window)) {
-      activate();
-      return;
-    }
-
-    const observer = new IntersectionObserver(function (entries) {
-      if (entries.some(function (entry) { return entry.isIntersecting; })) {
+      if (!("IntersectionObserver" in window)) {
         activate();
-        observer.disconnect();
+        return;
       }
-    });
 
-    observer.observe(video);
+      const observer = new IntersectionObserver(function (entries) {
+        if (
+          entries.some(function (entry) {
+            return entry.isIntersecting;
+          })
+        ) {
+          activate();
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(video);
+    });
   }
 
   function setupFilter() {
@@ -638,7 +656,10 @@
       "scroll",
       function () {
         const currentY = window.scrollY;
-        header.classList.toggle("is-hidden", currentY > lastY && currentY > 120);
+        header.classList.toggle(
+          "nysa-header--hidden",
+          currentY > lastY && currentY > 120
+        );
         lastY = currentY;
       },
       { passive: true }
@@ -796,7 +817,6 @@
 
   function installClarityPlaceholder() {
     if (!DATA.profile.clarityId || DATA.profile.clarityId === "YOUR_CLARITY_ID") {
-      console.info("Microsoft Clarity placeholder is still set.");
       return;
     }
     (function (c, l, a, r, i, t, y) {
@@ -813,7 +833,9 @@
     })(window, document, "clarity", "script", DATA.profile.clarityId);
   }
 
-  mount();
+  if (!nativePage) {
+    mount();
+  }
   loadLazyVideo();
   setupFilter();
   setupHeader();

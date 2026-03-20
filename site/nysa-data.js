@@ -13,9 +13,9 @@ window.NYSA_DATA = {
   },
   assets: {
     heroMp4:
-      "https://cdn.jsdelivr.net/gh/Nysa2005/nysa-webflow-assets@main/assets/video/brain-loopable-hero.mp4",
+      "https://cdn.jsdelivr.net/gh/Nysa2005/nysa-webflow-assets@main/assets/video/brain-loopable-hero-boomerang-clean.mp4",
     heroWebm:
-      "https://cdn.jsdelivr.net/gh/Nysa2005/nysa-webflow-assets@main/assets/video/brain-loopable-hero.webm",
+      "https://cdn.jsdelivr.net/gh/Nysa2005/nysa-webflow-assets@main/assets/video/brain-loopable-hero-boomerang-clean.webm",
     heroPoster:
       "https://cdn.jsdelivr.net/gh/Nysa2005/nysa-webflow-assets@main/assets/video/brain-loopable-poster.jpg",
     aboutVisual:

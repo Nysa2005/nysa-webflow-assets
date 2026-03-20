@@ -20,10 +20,6 @@
   --nysa-max-narrow: 820px;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   margin: 0;
   background:
@@ -92,10 +88,25 @@ select {
   background: rgba(6, 17, 27, 0.58);
   border-bottom: 1px solid rgba(127, 231, 255, 0.08);
   transition: transform 0.3s ease;
+  will-change: transform;
 }
 
-.nysa-header.is-hidden {
+.nysa-header.is-hidden,
+.nysa-header.nysa-header--hidden {
   transform: translateY(-100%);
+}
+
+body[data-nysa-native-page] > #nysa-app {
+  display: none !important;
+}
+
+body[data-nysa-native-page] > :not([data-nysa-native]):not(script):not(style) {
+  display: none !important;
+}
+
+body[data-nysa-native-page] > [data-nysa-native] {
+  position: relative;
+  z-index: 2;
 }
 
 .nysa-header__inner {
@@ -699,10 +710,6 @@ select {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   .nysa-header,
   .nysa-btn,
   .nysa-filter button,
