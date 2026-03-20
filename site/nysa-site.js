@@ -31,6 +31,7 @@
     return new Intl.DateTimeFormat("en-US", {
       month: "long",
       year: "numeric",
+      timeZone: "UTC",
     }).format(new Date(dateString));
   }
 
@@ -129,7 +130,7 @@
     return (
       '<article class="nysa-card nysa-skill-card" data-reveal>' +
       '<span class="nysa-skill-card__index">Skill ' +
-      String(index).padStart(2, "0") +
+      String(index + 1).padStart(2, "0") +
       "</span>" +
       '<h3 class="nysa-skill-card__title">' +
       escapeHtml(skill.name) +
@@ -151,6 +152,18 @@
     const skills = DATA.skills
       .slice()
       .sort((a, b) => a.sortOrder - b.sortOrder);
+
+    const calendlyPanel = DATA.profile.calendlyUrl.indexOf("YOUR_LINK") !== -1
+      ? '<div class="nysa-card nysa-contact-panel" data-reveal>' +
+        '<div class="nysa-kicker">Calendly Placeholder</div>' +
+        '<h3 class="nysa-project-card__title">Add your live scheduling link.</h3>' +
+        '<p class="nysa-copy">Replace <code>https://calendly.com/YOUR_LINK</code> in the shared data bundle to activate embedded scheduling here.</p>' +
+        "</div>"
+      : '<div class="nysa-card nysa-contact-panel nysa-embed" data-reveal>' +
+        '<iframe title="Calendly scheduling" src="' +
+        DATA.profile.calendlyUrl +
+        '"></iframe>' +
+        "</div>";
 
     return (
       renderHeader() +
@@ -236,11 +249,7 @@
       '" target="_blank" rel="noreferrer">LinkedIn</a>' +
       "</div>" +
       "</div>" +
-      '<div class="nysa-card nysa-contact-panel nysa-embed" data-reveal>' +
-      '<iframe title="Calendly scheduling" src="' +
-      DATA.profile.calendlyUrl +
-      '"></iframe>' +
-      "</div>" +
+      calendlyPanel +
       "</div>" +
       "</section>" +
       "</main>" +
@@ -368,6 +377,18 @@
   }
 
   function buildContact() {
+    const calendlyPanel = DATA.profile.calendlyUrl.indexOf("YOUR_LINK") !== -1
+      ? '<div class="nysa-card nysa-contact-panel" data-reveal>' +
+        '<div class="nysa-kicker">Calendly Placeholder</div>' +
+        '<h3 class="nysa-project-card__title">Scheduling will appear here.</h3>' +
+        '<p class="nysa-copy">Swap in the live Calendly URL to enable embedded booking on the contact page.</p>' +
+        "</div>"
+      : '<div class="nysa-card nysa-contact-panel nysa-embed" data-reveal>' +
+        '<iframe title="Calendly scheduling" src="' +
+        DATA.profile.calendlyUrl +
+        '"></iframe>' +
+        "</div>";
+
     return (
       renderHeader() +
       '<main class="nysa-shell">' +
@@ -398,11 +419,7 @@
       '" target="_blank" rel="noreferrer">Resume</a>' +
       "</div>" +
       "</div>" +
-      '<div class="nysa-card nysa-contact-panel nysa-embed" data-reveal>' +
-      '<iframe title="Calendly scheduling" src="' +
-      DATA.profile.calendlyUrl +
-      '"></iframe>' +
-      "</div>" +
+      calendlyPanel +
       "</div>" +
       "</section>" +
       "</main>" +
