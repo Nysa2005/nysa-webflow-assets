@@ -405,6 +405,7 @@ select {
 .nysa-project-card__summary,
 .nysa-skill-card__copy,
 .nysa-info-card__copy,
+.nysa-contact-copy,
 .nysa-detail-prose p,
 .nysa-timeline__copy,
 .nysa-contact-copy p {
@@ -604,6 +605,12 @@ select {
   background: rgba(127, 231, 255, 0.06);
   border: 1px solid rgba(127, 231, 255, 0.14);
   color: var(--nysa-text-muted);
+}
+
+.nysa-copy code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+  font-size: 0.92em;
+  color: var(--nysa-gold);
 }
 
 .nysa-footer {

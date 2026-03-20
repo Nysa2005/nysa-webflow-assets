@@ -43,6 +43,44 @@
     return '<a href="' + href + '"' + (active ? ' class="is-active"' : "") + ">" + label + "</a>";
   }
 
+  function hasLiveCalendly() {
+    return (
+      DATA.profile.calendlyUrl &&
+      DATA.profile.calendlyUrl.indexOf("YOUR_LINK") === -1
+    );
+  }
+
+  function hasResume() {
+    return DATA.profile.resumeUrl && DATA.profile.resumeUrl !== "#";
+  }
+
+  function resumeLink(label, className) {
+    if (hasResume()) {
+      return (
+        '<a class="' +
+        className +
+        '" href="' +
+        DATA.profile.resumeUrl +
+        '" target="_blank" rel="noreferrer noopener">' +
+        label +
+        "</a>"
+      );
+    }
+
+    const subject = encodeURIComponent("Resume request from portfolio");
+    return (
+      '<a class="' +
+      className +
+      '" href="mailto:' +
+      DATA.profile.email +
+      "?subject=" +
+      subject +
+      '">' +
+      (label === "Resume" ? "Request Resume" : label) +
+      "</a>"
+    );
+  }
+
   function renderHeader() {
     return (
       '<header class="nysa-header" data-header>' +
@@ -74,13 +112,11 @@
       '<div class="nysa-footer__links">' +
       '<a href="' +
       DATA.profile.linkedIn +
-      '" target="_blank" rel="noreferrer">LinkedIn</a>' +
+      '" target="_blank" rel="noreferrer noopener">LinkedIn</a>' +
       '<a href="mailto:' +
       DATA.profile.email +
       '">Email</a>' +
-      '<a href="' +
-      DATA.profile.resumeUrl +
-      '" target="_blank" rel="noreferrer">Resume</a>' +
+      resumeLink("Resume", "nysa-footer__link") +
       "</div>" +
       "</div>" +
       '<div class="nysa-container" style="margin-top:18px;color:var(--nysa-text-muted);font-size:0.9rem;">' +
@@ -95,7 +131,7 @@
   function projectCard(project) {
     return (
       '<a class="nysa-card nysa-project-card" href="/projects/' +
-      '?slug=' +
+      "?slug=" +
       project.slug +
       '" data-category="' +
       escapeHtml(project.category) +
@@ -154,7 +190,7 @@
       .slice()
       .sort((a, b) => a.sortOrder - b.sortOrder);
 
-    const calendlyPanel = DATA.profile.calendlyUrl.indexOf("YOUR_LINK") !== -1
+    const calendlyPanel = !hasLiveCalendly()
       ? '<div class="nysa-card nysa-contact-panel" data-reveal>' +
         '<div class="nysa-kicker">Calendly Placeholder</div>' +
         '<h3 class="nysa-project-card__title">Add your live scheduling link.</h3>' +
@@ -247,7 +283,7 @@
       '<a class="nysa-btn nysa-btn--primary" href="/contact">Open Contact Page</a>' +
       '<a class="nysa-btn nysa-btn--secondary" href="' +
       DATA.profile.linkedIn +
-      '" target="_blank" rel="noreferrer">LinkedIn</a>' +
+      '" target="_blank" rel="noreferrer noopener">LinkedIn</a>' +
       "</div>" +
       "</div>" +
       calendlyPanel +
@@ -378,11 +414,11 @@
   }
 
   function buildContact() {
-    const calendlyPanel = DATA.profile.calendlyUrl.indexOf("YOUR_LINK") !== -1
+    const calendlyPanel = !hasLiveCalendly()
       ? '<div class="nysa-card nysa-contact-panel" data-reveal>' +
         '<div class="nysa-kicker">Calendly Placeholder</div>' +
         '<h3 class="nysa-project-card__title">Scheduling will appear here.</h3>' +
-        '<p class="nysa-copy">Swap in the live Calendly URL to enable embedded booking on the contact page.</p>' +
+        '<p class="nysa-copy">Swap in the live Calendly URL to enable embedded booking on the contact page. Until then, email is the fastest way to schedule a conversation.</p>' +
         "</div>"
       : '<div class="nysa-card nysa-contact-panel nysa-embed" data-reveal>' +
         '<iframe title="Calendly scheduling" src="' +
@@ -404,20 +440,20 @@
       '<div class="nysa-container nysa-contact">' +
       '<div class="nysa-card nysa-contact-panel" data-reveal>' +
       '<h2 class="nysa-section-title">Send a note</h2>' +
-      '<p class="nysa-contact-copy">This form opens a pre-filled email draft so inquiries can be sent immediately while production form handling is finalized.</p>' +
+      '<p class="nysa-contact-copy">This form opens a pre-filled email draft addressed to ' +
+      escapeHtml(DATA.profile.email) +
+      " so inquiries can be sent immediately.</p>" +
       '<form class="nysa-contact-form" id="nysa-contact-form">' +
       '<div class="nysa-field"><label for="nysa-name">Name</label><input id="nysa-name" name="name" type="text" required></div>' +
       '<div class="nysa-field"><label for="nysa-email">Email</label><input id="nysa-email" name="email" type="email" required></div>' +
       '<div class="nysa-field"><label for="nysa-message">Message</label><textarea id="nysa-message" name="message" required></textarea></div>' +
-      '<button class="nysa-btn nysa-btn--primary" type="submit">Open Email Draft</button>' +
+      '<button class="nysa-btn nysa-btn--primary" type="submit">Send via Email</button>' +
       "</form>" +
       '<div class="nysa-contact-links">' +
       '<a class="nysa-btn nysa-btn--secondary" href="' +
       DATA.profile.linkedIn +
-      '" target="_blank" rel="noreferrer">LinkedIn</a>' +
-      '<a class="nysa-btn nysa-btn--secondary" href="' +
-      DATA.profile.resumeUrl +
-      '" target="_blank" rel="noreferrer">Resume</a>' +
+      '" target="_blank" rel="noreferrer noopener">LinkedIn</a>' +
+      resumeLink("Resume", "nysa-btn nysa-btn--secondary") +
       "</div>" +
       "</div>" +
       calendlyPanel +
@@ -432,7 +468,7 @@
     if (!project) {
       return (
         renderHeader() +
-        '<main class="nysa-shell"><section class="nysa-page-hero"><div class="nysa-container--narrow"><div class="nysa-empty">Project not found.</div></div></section></main>' +
+        '<main class="nysa-shell"><section class="nysa-page-hero"><div class="nysa-container--narrow"><div class="nysa-empty">Project not found. Return to <a href="/work">Selected Work</a> to browse the available case studies.</div></div></section></main>' +
         renderFooter()
       );
     }
@@ -520,7 +556,7 @@
       html = buildAbout();
     } else if (path === "/contact") {
       html = buildContact();
-    } else if (path === "/projects" && querySlug) {
+    } else if ((path === "/projects" || path === "/project-view") && querySlug) {
       const project = DATA.projects.find(function (item) {
         return item.slug === querySlug;
       });
@@ -660,11 +696,63 @@
   function setupLenis() {
     if (!window.Lenis || prefersReducedMotion) return;
     const lenis = new window.Lenis({ smoothWheel: true, lerp: 0.09 });
+    if (typeof lenis.on === "function" && window.ScrollTrigger) {
+      lenis.on("scroll", window.ScrollTrigger.update);
+    }
     function raf(time) {
       lenis.raf(time);
       window.requestAnimationFrame(raf);
     }
     window.requestAnimationFrame(raf);
+  }
+
+  function updateMeta() {
+    var title = document.title;
+    var description = "Neuroscience × Strategy × Healthcare. Turning research into results.";
+    var canonical = window.location.origin + window.location.pathname + window.location.search;
+    var metaQuerySlug = new URLSearchParams(window.location.search).get("slug");
+
+    if (path === "/work") {
+      description =
+        "Explore Nysa Olakkengil's portfolio of research, internship, and strategy projects spanning neuroscience, health equity, and operations.";
+    } else if (path === "/about") {
+      description =
+        "Learn how Nysa Olakkengil brings neuroscience, policy, research, and operations together for healthcare consulting.";
+    } else if (path === "/contact") {
+      description =
+        "Get in touch with Nysa Olakkengil for healthcare consulting conversations, research collaboration, and portfolio inquiries.";
+    } else if (path === "/projects" || path === "/project-view" || path.indexOf("/projects/") === 0) {
+      var lookupSlug =
+        metaQuerySlug || (path.indexOf("/projects/") === 0 ? path.split("/projects/")[1] : "");
+      var project = DATA.projects.find(function (item) {
+        return item.slug === lookupSlug;
+      });
+      if (project) {
+        title = project.name + " — Nysa Olakkengil";
+        description = project.summary;
+      }
+    }
+
+    document.title = title;
+
+    [
+      ['meta[name="description"]', "content", description],
+      ['meta[property="og:title"]', "content", title],
+      ['meta[property="og:description"]', "content", description],
+      ['meta[name="twitter:title"]', "content", title],
+      ['meta[name="twitter:description"]', "content", description],
+    ].forEach(function (item) {
+      var node = document.head.querySelector(item[0]);
+      if (node) node.setAttribute(item[1], item[2]);
+    });
+
+    var canonicalNode = document.head.querySelector('link[rel="canonical"]');
+    if (!canonicalNode) {
+      canonicalNode = document.createElement("link");
+      canonicalNode.setAttribute("rel", "canonical");
+      document.head.appendChild(canonicalNode);
+    }
+    canonicalNode.setAttribute("href", canonical);
   }
 
   function setupContactForm() {
@@ -732,6 +820,7 @@
   setupReveal();
   setupLenis();
   setupContactForm();
+  updateMeta();
   installSchema();
   installClarityPlaceholder();
 })();
