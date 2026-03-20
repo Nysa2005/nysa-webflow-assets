@@ -216,7 +216,7 @@ window.NYSA_DATA = {
     {
       slug: "academic-program-operations",
       name: "Academic Program Operations",
-      category: "Internship",
+      category: "Academic",
       featured: false,
       organization: "College of Education — Michigan State University",
       date: "2024-02-01T00:00:00.000Z",
