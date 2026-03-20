@@ -130,7 +130,7 @@
 
   function projectCard(project) {
     return (
-      '<a class="nysa-card nysa-project-card" href="/projects/' +
+      '<a class="nysa-card nysa-project-card" href="/projects' +
       "?slug=" +
       project.slug +
       '" data-category="' +
