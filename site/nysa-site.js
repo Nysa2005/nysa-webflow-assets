@@ -95,6 +95,7 @@
   function projectCard(project) {
     return (
       '<a class="nysa-card nysa-project-card" href="/projects/' +
+      '?slug=' +
       project.slug +
       '" data-category="' +
       escapeHtml(project.category) +
@@ -509,6 +510,7 @@
 
   function mount() {
     let html = "";
+    const querySlug = new URLSearchParams(window.location.search).get("slug");
 
     if (path === "/") {
       html = buildHome();
@@ -518,11 +520,18 @@
       html = buildAbout();
     } else if (path === "/contact") {
       html = buildContact();
+    } else if (path === "/projects" && querySlug) {
+      const project = DATA.projects.find(function (item) {
+        return item.slug === querySlug;
+      });
+      if (project) document.title = project.name + " — Nysa Olakkengil";
+      html = buildProject(project);
     } else if (path.indexOf("/projects/") === 0) {
       const slug = path.split("/projects/")[1];
       const project = DATA.projects.find(function (item) {
         return item.slug === slug;
       });
+      if (project) document.title = project.name + " — Nysa Olakkengil";
       html = buildProject(project);
     } else {
       html = buildHome();
