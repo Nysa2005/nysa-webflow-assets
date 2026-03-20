@@ -1,0 +1,714 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
+
+:root {
+  --nysa-bg: #06111b;
+  --nysa-bg-soft: #0d1e2e;
+  --nysa-panel: rgba(12, 27, 41, 0.78);
+  --nysa-panel-strong: rgba(10, 22, 34, 0.94);
+  --nysa-panel-border: rgba(157, 214, 255, 0.18);
+  --nysa-text: #eef6ff;
+  --nysa-text-muted: #a9bfd1;
+  --nysa-cyan: #7fe7ff;
+  --nysa-cyan-strong: #55d7ff;
+  --nysa-orange: #ff8f6b;
+  --nysa-gold: #f4d07a;
+  --nysa-shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
+  --nysa-radius-xl: 32px;
+  --nysa-radius-lg: 24px;
+  --nysa-radius-md: 18px;
+  --nysa-max: 1180px;
+  --nysa-max-narrow: 820px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(85, 215, 255, 0.12), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(255, 143, 107, 0.1), transparent 22%),
+    linear-gradient(180deg, #06111b 0%, #091825 100%);
+  color: var(--nysa-text);
+  font-family: "Inter", sans-serif;
+}
+
+#nysa-app {
+  position: relative;
+  z-index: 2;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.nysa-shell {
+  min-height: 100vh;
+}
+
+.nysa-bg-grid::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(127, 231, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 231, 255, 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at center, black 25%, transparent 85%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.nysa-container {
+  width: min(calc(100% - 40px), var(--nysa-max));
+  margin: 0 auto;
+}
+
+.nysa-container--narrow {
+  width: min(calc(100% - 40px), var(--nysa-max-narrow));
+  margin: 0 auto;
+}
+
+.nysa-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 18px 0;
+  backdrop-filter: blur(20px);
+  background: rgba(6, 17, 27, 0.58);
+  border-bottom: 1px solid rgba(127, 231, 255, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.nysa-header.is-hidden {
+  transform: translateY(-100%);
+}
+
+.nysa-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.nysa-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.96rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.nysa-logo__mark {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--nysa-cyan), var(--nysa-orange));
+  box-shadow: 0 0 22px rgba(127, 231, 255, 0.45);
+}
+
+.nysa-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nysa-nav a {
+  text-decoration: none;
+  color: var(--nysa-text-muted);
+  padding: 10px 14px;
+  border-radius: 999px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.nysa-nav a.is-active,
+.nysa-nav a:hover {
+  color: var(--nysa-text);
+  background: rgba(127, 231, 255, 0.08);
+}
+
+.nysa-page-hero,
+.nysa-home-hero {
+  position: relative;
+  padding: 110px 0 72px;
+}
+
+.nysa-home-hero {
+  min-height: 78vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.nysa-hero-video,
+.nysa-hero-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nysa-hero-video {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.nysa-hero-video.is-ready {
+  opacity: 0.35;
+}
+
+.nysa-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(127, 231, 255, 0.2), transparent 24%),
+    linear-gradient(180deg, rgba(3, 8, 14, 0.38), rgba(6, 17, 27, 0.88) 72%);
+}
+
+.nysa-hero-mesh {
+  position: absolute;
+  inset: auto -10% -18% auto;
+  width: 520px;
+  height: 520px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(85, 215, 255, 0.22), transparent 64%);
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+.nysa-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+}
+
+.nysa-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+  color: var(--nysa-cyan);
+  background: rgba(127, 231, 255, 0.08);
+  border: 1px solid rgba(127, 231, 255, 0.18);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nysa-title {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(2.8rem, 6vw, 5.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+
+.nysa-title--page {
+  font-size: clamp(2.4rem, 5vw, 4.3rem);
+  line-height: 1.02;
+}
+
+.nysa-gradient {
+  background: linear-gradient(120deg, var(--nysa-cyan), #d8f6ff 46%, var(--nysa-orange));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nysa-subtitle,
+.nysa-copy {
+  color: var(--nysa-text-muted);
+  font-size: clamp(1.03rem, 2vw, 1.22rem);
+  line-height: 1.75;
+}
+
+.nysa-copy--tight {
+  max-width: 760px;
+}
+
+.nysa-actions,
+.nysa-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.nysa-actions {
+  margin-top: 30px;
+}
+
+.nysa-btn,
+.nysa-filter button {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 14px 20px;
+  border-radius: 999px;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.nysa-btn:hover,
+.nysa-filter button:hover {
+  transform: translateY(-1px);
+}
+
+.nysa-btn--primary {
+  color: #04111b;
+  background: linear-gradient(135deg, var(--nysa-cyan), #c6f4ff);
+}
+
+.nysa-btn--secondary,
+.nysa-filter button {
+  color: var(--nysa-text);
+  background: rgba(127, 231, 255, 0.08);
+  border: 1px solid rgba(127, 231, 255, 0.14);
+}
+
+.nysa-filter button.is-active {
+  color: #04111b;
+  background: linear-gradient(135deg, var(--nysa-gold), #fff0bb);
+}
+
+.nysa-section {
+  padding: 28px 0 78px;
+}
+
+.nysa-section--spacious {
+  padding-top: 40px;
+  padding-bottom: 96px;
+}
+
+.nysa-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.nysa-section-title {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(1.95rem, 3vw, 3rem);
+  line-height: 1.04;
+}
+
+.nysa-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.nysa-grid--projects {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.nysa-grid--skills,
+.nysa-grid--info {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.nysa-card {
+  background: linear-gradient(180deg, rgba(15, 31, 48, 0.95), rgba(8, 19, 30, 0.96));
+  border: 1px solid var(--nysa-panel-border);
+  border-radius: var(--nysa-radius-lg);
+  box-shadow: var(--nysa-shadow);
+  overflow: hidden;
+}
+
+.nysa-project-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  text-decoration: none;
+}
+
+.nysa-project-card__media {
+  aspect-ratio: 16 / 10;
+  background: #102435;
+}
+
+.nysa-project-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nysa-project-card__body,
+.nysa-skill-card,
+.nysa-info-card {
+  padding: 24px;
+}
+
+.nysa-project-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+  color: var(--nysa-text-muted);
+  font-size: 0.9rem;
+}
+
+.nysa-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nysa-text);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nysa-tag--accent {
+  background: rgba(127, 231, 255, 0.08);
+  border-color: rgba(127, 231, 255, 0.16);
+  color: var(--nysa-cyan);
+}
+
+.nysa-project-card__title,
+.nysa-skill-card__title,
+.nysa-detail-section__title {
+  margin: 0 0 10px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.34rem;
+  line-height: 1.2;
+}
+
+.nysa-project-card__summary,
+.nysa-skill-card__copy,
+.nysa-info-card__copy,
+.nysa-detail-prose p,
+.nysa-timeline__copy,
+.nysa-contact-copy p {
+  color: var(--nysa-text-muted);
+  line-height: 1.75;
+}
+
+.nysa-skill-card__index {
+  display: inline-flex;
+  margin-bottom: 14px;
+  color: var(--nysa-gold);
+  font-size: 0.88rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nysa-about {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.nysa-about__visual {
+  position: relative;
+}
+
+.nysa-about__visual img {
+  width: 100%;
+  border-radius: var(--nysa-radius-xl);
+  border: 1px solid var(--nysa-panel-border);
+  box-shadow: var(--nysa-shadow);
+}
+
+.nysa-timeline {
+  display: grid;
+  gap: 22px;
+  margin-top: 30px;
+}
+
+.nysa-timeline__item {
+  position: relative;
+  padding: 0 0 0 26px;
+}
+
+.nysa-timeline__item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--nysa-cyan), var(--nysa-orange));
+  box-shadow: 0 0 18px rgba(127, 231, 255, 0.4);
+}
+
+.nysa-timeline__date {
+  color: var(--nysa-cyan);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.nysa-timeline__title,
+.nysa-info-card__title {
+  margin: 8px 0 8px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.1rem;
+}
+
+.nysa-detail-hero {
+  display: grid;
+  gap: 24px;
+}
+
+.nysa-detail-media {
+  border-radius: var(--nysa-radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--nysa-panel-border);
+  background: #0a1824;
+  box-shadow: var(--nysa-shadow);
+}
+
+.nysa-detail-media img,
+.nysa-detail-media video {
+  width: 100%;
+  max-height: 560px;
+  object-fit: cover;
+}
+
+.nysa-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  color: var(--nysa-text-muted);
+}
+
+.nysa-detail-sections {
+  display: grid;
+  gap: 22px;
+  margin-top: 28px;
+}
+
+.nysa-detail-section {
+  padding: 26px;
+}
+
+.nysa-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nysa-insight {
+  padding: 28px;
+  border-radius: var(--nysa-radius-lg);
+  background: linear-gradient(135deg, rgba(127, 231, 255, 0.12), rgba(255, 143, 107, 0.12));
+  border: 1px solid rgba(127, 231, 255, 0.16);
+}
+
+.nysa-contact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.nysa-contact-panel {
+  padding: 28px;
+}
+
+.nysa-contact-form {
+  display: grid;
+  gap: 16px;
+}
+
+.nysa-field {
+  display: grid;
+  gap: 8px;
+}
+
+.nysa-field label {
+  font-size: 0.92rem;
+  color: var(--nysa-text-muted);
+}
+
+.nysa-field input,
+.nysa-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  color: var(--nysa-text);
+  background: rgba(6, 17, 27, 0.62);
+  border: 1px solid rgba(127, 231, 255, 0.15);
+  border-radius: 16px;
+  outline: 0;
+}
+
+.nysa-field textarea {
+  min-height: 170px;
+  resize: vertical;
+}
+
+.nysa-field input:focus,
+.nysa-field textarea:focus,
+.nysa-btn:focus,
+.nysa-nav a:focus,
+.nysa-filter button:focus {
+  box-shadow: 0 0 0 3px rgba(127, 231, 255, 0.24);
+}
+
+.nysa-contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.nysa-embed {
+  min-height: 460px;
+  border-radius: var(--nysa-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--nysa-panel-border);
+}
+
+.nysa-embed iframe {
+  width: 100%;
+  min-height: 460px;
+  border: 0;
+  background: white;
+}
+
+.nysa-empty {
+  padding: 28px;
+  border-radius: var(--nysa-radius-lg);
+  background: rgba(127, 231, 255, 0.06);
+  border: 1px solid rgba(127, 231, 255, 0.14);
+  color: var(--nysa-text-muted);
+}
+
+.nysa-footer {
+  padding: 26px 0 42px;
+  border-top: 1px solid rgba(127, 231, 255, 0.08);
+}
+
+.nysa-footer__inner {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 24px;
+  align-items: end;
+}
+
+.nysa-footer__brand {
+  max-width: 520px;
+}
+
+.nysa-footer__title {
+  margin: 0 0 10px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.2rem;
+}
+
+.nysa-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.nysa-footer__links a {
+  color: var(--nysa-text-muted);
+  text-decoration: none;
+}
+
+.nysa-footer__links a:hover {
+  color: var(--nysa-text);
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+@media (max-width: 991px) {
+  .nysa-about,
+  .nysa-contact,
+  .nysa-footer__inner,
+  .nysa-grid--projects,
+  .nysa-grid--skills,
+  .nysa-grid--info {
+    grid-template-columns: 1fr;
+  }
+
+  .nysa-home-hero {
+    min-height: 64vh;
+  }
+}
+
+@media (max-width: 767px) {
+  .nysa-header__inner,
+  .nysa-section-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nysa-page-hero,
+  .nysa-home-hero {
+    padding-top: 92px;
+  }
+
+  .nysa-title {
+    letter-spacing: -0.055em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .nysa-header,
+  .nysa-btn,
+  .nysa-filter button,
+  [data-reveal] {
+    transition: none;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .nysa-hero-video {
+    display: none;
+  }
+}
