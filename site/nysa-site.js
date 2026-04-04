@@ -186,11 +186,7 @@
       .sort((a, b) => a.sortOrder - b.sortOrder);
 
     const calendlyPanel = !hasLiveCalendly()
-      ? '<div class="nysa-card nysa-contact-panel" data-reveal>' +
-        '<div class="nysa-kicker">Calendly Placeholder</div>' +
-        '<h3 class="nysa-project-card__title">Add your live scheduling link.</h3>' +
-        '<p class="nysa-copy">Replace <code>https://calendly.com/YOUR_LINK</code> in the shared data bundle to activate embedded scheduling here.</p>' +
-        "</div>"
+      ? ""
       : '<div class="nysa-card nysa-contact-panel nysa-embed" data-reveal>' +
         '<iframe title="Calendly scheduling" src="' +
         DATA.profile.calendlyUrl +
@@ -201,7 +197,11 @@
       renderHeader() +
       '<main class="nysa-shell">' +
       '<section class="nysa-home-hero">' +
-      '<img class="nysa-hero-poster" src="' +
+      '<div class="nysa-3d-hero-container" id="nysa-3d-hero" aria-hidden="true">' +
+      "<!-- 3D model embed: Replace this comment with a Spline viewer tag or Three.js canvas -->" +
+      "<!-- Example: <spline-viewer url='https://prod.spline.design/YOUR_SCENE_ID/scene.splinecode'></spline-viewer> -->" +
+      "</div>" +
+      '<img class="nysa-hero-poster nysa-3d-hero-fallback" src="' +
       DATA.assets.heroPoster +
       '" alt="" aria-hidden="true">' +
       '<video class="nysa-hero-video" autoplay muted loop playsinline preload="none" poster="' +
@@ -290,7 +290,14 @@
   }
 
   function buildWork() {
-    const filters = [
+    const projects = DATA.projects
+      .slice()
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    var activeCategories = {};
+    projects.forEach(function (p) { activeCategories[p.category] = true; });
+
+    const allFilters = [
       { label: "All", value: "All" },
       { label: "Research", value: "Research" },
       { label: "Internship", value: "Internship" },
@@ -298,9 +305,10 @@
       { label: "Coursework / Academic", value: "Academic" },
       { label: "Extracurricular", value: "Extracurricular" },
     ];
-    const projects = DATA.projects
-      .slice()
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const filters = allFilters.filter(function (f) {
+      return f.value === "All" || activeCategories[f.value];
+    });
 
     return (
       renderHeader() +
@@ -340,6 +348,12 @@
   }
 
   function buildAbout() {
+    var headshotBlock = DATA.assets.headshotUrl
+      ? '<div class="nysa-about-headshot" data-reveal>' +
+        '<img src="' + DATA.assets.headshotUrl + '" alt="Nysa Olakkengil" class="nysa-headshot-img">' +
+        '</div>'
+      : "";
+
     return (
       renderHeader() +
       '<main class="nysa-shell">' +
@@ -352,6 +366,7 @@
       "</section>" +
       '<section class="nysa-section">' +
       '<div class="nysa-container--narrow">' +
+      headshotBlock +
       DATA.aboutNarrative
         .map(function (paragraph) {
           return '<p class="nysa-copy" data-reveal>' + escapeHtml(paragraph) + "</p>";
@@ -410,11 +425,7 @@
 
   function buildContact() {
     const calendlyPanel = !hasLiveCalendly()
-      ? '<div class="nysa-card nysa-contact-panel" data-reveal>' +
-        '<div class="nysa-kicker">Calendly Placeholder</div>' +
-        '<h3 class="nysa-project-card__title">Scheduling will appear here.</h3>' +
-        '<p class="nysa-copy">Swap in the live Calendly URL to enable embedded booking on the contact page. Until then, email is the fastest way to schedule a conversation.</p>' +
-        "</div>"
+      ? ""
       : '<div class="nysa-card nysa-contact-panel nysa-embed" data-reveal>' +
         '<iframe title="Calendly scheduling" src="' +
         DATA.profile.calendlyUrl +
@@ -432,17 +443,20 @@
       "</div>" +
       "</section>" +
       '<section class="nysa-section">' +
-      '<div class="nysa-container nysa-contact">' +
+      '<div class="nysa-container' + (hasLiveCalendly() ? " nysa-contact" : "") + '">' +
       '<div class="nysa-card nysa-contact-panel" data-reveal>' +
       '<h2 class="nysa-section-title">Send a note</h2>' +
-      '<p class="nysa-contact-copy">This form opens a pre-filled email draft addressed to ' +
-      escapeHtml(DATA.profile.email) +
-      " so inquiries can be sent immediately.</p>" +
-      '<form class="nysa-contact-form" id="nysa-contact-form">' +
+      '<p class="nysa-contact-copy">Fill out the form below and your message will be delivered directly.</p>' +
+      '<form class="nysa-contact-form" id="nysa-contact-form" action="https://formsubmit.co/' + DATA.profile.email + '" method="POST">' +
+      '<input type="hidden" name="_subject" value="Portfolio inquiry — Nysa Olakkengil">' +
+      '<input type="hidden" name="_captcha" value="false">' +
+      '<input type="hidden" name="_template" value="table">' +
+      '<input type="hidden" name="_next" value="' + (DATA.profile.siteUrl || window.location.origin) + '/contact?submitted=true">' +
       '<div class="nysa-field"><label for="nysa-name">Name</label><input id="nysa-name" name="name" type="text" required></div>' +
       '<div class="nysa-field"><label for="nysa-email">Email</label><input id="nysa-email" name="email" type="email" required></div>' +
       '<div class="nysa-field"><label for="nysa-message">Message</label><textarea id="nysa-message" name="message" required></textarea></div>' +
-      '<button class="nysa-btn nysa-btn--primary" type="submit">Send via Email</button>' +
+      '<button class="nysa-btn nysa-btn--primary" type="submit" id="nysa-submit-btn">Send Message</button>' +
+      '<div id="nysa-form-status" class="nysa-form-status" style="display:none;"></div>' +
       "</form>" +
       '<div class="nysa-contact-links">' +
       '<a class="nysa-btn nysa-btn--secondary" href="' +
@@ -729,17 +743,20 @@
 
   function updateMeta() {
     var title = document.title;
-    var description = "Neuroscience × Strategy × Healthcare. Turning research into results.";
+    var description = "Nysa Olakkengil — Neuroscience researcher at Michigan State University bridging lab rigor, health equity research, and consulting-style strategy. Turning research into results.";
     var canonical = window.location.origin + window.location.pathname + window.location.search;
     var metaQuerySlug = new URLSearchParams(window.location.search).get("slug");
 
     if (path === "/work") {
+      title = "Selected Work — Nysa Olakkengil";
       description =
-        "Explore Nysa Olakkengil's portfolio of research, internship, and strategy projects spanning neuroscience, health equity, and operations.";
+        "Explore Nysa Olakkengil's portfolio of research, internship, and strategy projects spanning neuroscience, health equity, and healthcare operations.";
     } else if (path === "/about") {
+      title = "About — Nysa Olakkengil";
       description =
-        "Learn how Nysa Olakkengil brings neuroscience, policy, research, and operations together for healthcare consulting.";
+        "Learn how Nysa Olakkengil, a neuroscience major at Michigan State University, combines scientific rigor, policy analysis, and operational problem solving for healthcare consulting.";
     } else if (path === "/contact") {
+      title = "Contact — Nysa Olakkengil";
       description =
         "Get in touch with Nysa Olakkengil for healthcare consulting conversations, research collaboration, and portfolio inquiries.";
     } else if (path === "/projects" || path === "/project-view" || path.indexOf("/projects/") === 0) {
@@ -756,15 +773,26 @@
 
     document.title = title;
 
-    [
+    var metaTags = [
       ['meta[name="description"]', "content", description],
       ['meta[property="og:title"]', "content", title],
       ['meta[property="og:description"]', "content", description],
+      ['meta[property="og:type"]', "content", "website"],
+      ['meta[property="og:url"]', "content", canonical],
+      ['meta[name="twitter:card"]', "content", "summary_large_image"],
       ['meta[name="twitter:title"]', "content", title],
       ['meta[name="twitter:description"]', "content", description],
-    ].forEach(function (item) {
+    ];
+
+    metaTags.forEach(function (item) {
       var node = document.head.querySelector(item[0]);
-      if (node) node.setAttribute(item[1], item[2]);
+      if (!node) {
+        node = document.createElement("meta");
+        var attr = item[0].match(/\[(\w+)="([^"]+)"\]/);
+        if (attr) node.setAttribute(attr[1], attr[2]);
+        document.head.appendChild(node);
+      }
+      node.setAttribute(item[1], item[2]);
     });
 
     var canonicalNode = document.head.querySelector('link[rel="canonical"]');
@@ -780,22 +808,23 @@
     const form = document.getElementById("nysa-contact-form");
     if (!form) return;
 
+    var params = new URLSearchParams(window.location.search);
+    if (params.get("submitted") === "true") {
+      var statusEl = document.getElementById("nysa-form-status");
+      if (statusEl) {
+        statusEl.style.display = "block";
+        statusEl.style.color = "var(--nysa-cyan)";
+        statusEl.style.padding = "14px 0";
+        statusEl.textContent = "Message sent successfully. Nysa will be in touch soon.";
+      }
+    }
+
     form.addEventListener("submit", function (event) {
-      event.preventDefault();
-      const name = form.name.value.trim();
-      const email = form.email.value.trim();
-      const message = form.message.value.trim();
-      const subject = encodeURIComponent("Portfolio inquiry from " + name);
-      const body = encodeURIComponent(
-        "Name: " +
-          name +
-          "\nEmail: " +
-          email +
-          "\n\nMessage:\n" +
-          message
-      );
-      window.location.href =
-        "mailto:" + DATA.profile.email + "?subject=" + subject + "&body=" + body;
+      var btn = document.getElementById("nysa-submit-btn");
+      if (btn) {
+        btn.textContent = "Sending...";
+        btn.disabled = true;
+      }
     });
   }
 
@@ -833,6 +862,68 @@
     })(window, document, "clarity", "script", DATA.profile.clarityId);
   }
 
+  function setupCardTilt() {
+    if (prefersReducedMotion) return;
+    var cards = Array.prototype.slice.call(
+      document.querySelectorAll(".nysa-project-card")
+    );
+    if (!cards.length) return;
+
+    cards.forEach(function (card) {
+      card.addEventListener("mousemove", function (e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        var midX = rect.width / 2;
+        var midY = rect.height / 2;
+        var rotateY = ((x - midX) / midX) * 6;
+        var rotateX = ((midY - y) / midY) * 4;
+        card.style.transform =
+          "perspective(800px) rotateX(" + rotateX + "deg) rotateY(" + rotateY + "deg) scale(1.02)";
+      });
+
+      card.addEventListener("mouseleave", function () {
+        card.style.transform = "";
+      });
+    });
+  }
+
+  function setupRevealStagger() {
+    if (prefersReducedMotion) return;
+    var grids = Array.prototype.slice.call(
+      document.querySelectorAll(".nysa-grid")
+    );
+    grids.forEach(function (grid) {
+      var children = Array.prototype.slice.call(
+        grid.querySelectorAll("[data-reveal]")
+      );
+      children.forEach(function (child, index) {
+        child.style.transitionDelay = (index * 0.08) + "s";
+      });
+    });
+  }
+
+  function setup3dHero() {
+    var container = document.getElementById("nysa-3d-hero");
+    if (!container) return;
+
+    if (DATA.assets.splineUrl) {
+      var script = document.createElement("script");
+      script.type = "module";
+      script.src = "https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js";
+      document.head.appendChild(script);
+
+      script.onload = function () {
+        container.innerHTML =
+          '<spline-viewer url="' + DATA.assets.splineUrl + '" loading-anim-type="none"></spline-viewer>';
+        var poster = document.querySelector(".nysa-hero-poster");
+        if (poster) poster.style.display = "none";
+        var video = document.querySelector(".nysa-hero-video");
+        if (video) video.style.display = "none";
+      };
+    }
+  }
+
   if (!nativePage) {
     mount();
   }
@@ -840,8 +931,11 @@
   setupFilter();
   setupHeader();
   setupReveal();
+  setupRevealStagger();
   setupLenis();
   setupContactForm();
+  setupCardTilt();
+  setup3dHero();
   updateMeta();
   installSchema();
   installClarityPlaceholder();

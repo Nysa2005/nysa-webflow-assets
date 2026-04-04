@@ -67,6 +67,12 @@ select {
   mask-image: radial-gradient(circle at center, black 25%, transparent 85%);
   pointer-events: none;
   z-index: 0;
+  animation: nysa-grid-drift 45s linear infinite;
+}
+
+@keyframes nysa-grid-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 72px 72px; }
 }
 
 .nysa-container {
@@ -677,6 +683,126 @@ body[data-nysa-native-page] > [data-nysa-native] {
   display: none !important;
 }
 
+.nysa-page-hero .nysa-title,
+.nysa-page-hero .nysa-title--page {
+  color: #f0f8ff;
+  text-shadow: 0 2px 32px rgba(0, 0, 0, 0.5);
+}
+
+.nysa-page-hero .nysa-subtitle {
+  color: #c8dced;
+}
+
+.nysa-page-hero .nysa-kicker {
+  color: var(--nysa-cyan);
+}
+
+.nysa-section .nysa-copy {
+  color: #c0d4e4;
+}
+
+.nysa-calendly-hidden {
+  display: none !important;
+}
+
+.nysa-project-card {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.nysa-project-card:hover {
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.45), 0 0 40px rgba(127, 231, 255, 0.08);
+}
+
+.nysa-project-card__media img {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nysa-project-card:hover .nysa-project-card__media img {
+  transform: scale(1.04);
+}
+
+.nysa-skill-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.nysa-skill-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 28px rgba(127, 231, 255, 0.06);
+  border-color: rgba(127, 231, 255, 0.28);
+}
+
+.nysa-nav a {
+  position: relative;
+}
+
+.nysa-nav a::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--nysa-cyan);
+  border-radius: 1px;
+  transition: width 0.25s ease, left 0.25s ease;
+}
+
+.nysa-nav a:hover::after,
+.nysa-nav a.is-active::after {
+  width: 60%;
+  left: 20%;
+}
+
+.nysa-about-headshot {
+  float: right;
+  margin: 0 0 24px 32px;
+  max-width: 240px;
+}
+
+.nysa-headshot-img {
+  width: 100%;
+  border-radius: var(--nysa-radius-xl);
+  border: 2px solid var(--nysa-panel-border);
+  box-shadow: var(--nysa-shadow);
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.nysa-form-status {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.nysa-3d-hero-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.nysa-3d-hero-container canvas,
+.nysa-3d-hero-container iframe,
+.nysa-3d-hero-container spline-viewer {
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.nysa-3d-hero-fallback {
+  display: none;
+}
+
+@supports not (display: grid) {
+  .nysa-3d-hero-container {
+    display: none;
+  }
+  .nysa-3d-hero-fallback {
+    display: block;
+  }
+}
+
 @media (max-width: 991px) {
   .nysa-about,
   .nysa-contact,
@@ -706,6 +832,12 @@ body[data-nysa-native-page] > [data-nysa-native] {
 
   .nysa-title {
     letter-spacing: -0.055em;
+  }
+
+  .nysa-about-headshot {
+    float: none;
+    margin: 0 auto 28px;
+    max-width: 180px;
   }
 }
 
