@@ -22,6 +22,8 @@ window.NYSA_DATA = {
       "https://cdn.jsdelivr.net/gh/Nysa2005/nysa-webflow-assets@main/assets/images/about-visual.webp",
     heroFallback:
       "https://cdn.jsdelivr.net/gh/Nysa2005/nysa-webflow-assets@main/assets/images/hero-bg.webp",
+    splineUrl: "",
+    headshotUrl: "",
   },
   aboutPreview:
     "Nysa Olakkengil is a neuroscience researcher who thinks like a consultant. She bridges lab rigor, policy analysis, and operational problem solving to help healthcare organizations make better decisions.",
@@ -73,7 +75,11 @@ window.NYSA_DATA = {
   aboutCards: [
     {
       label: "Education",
-      value: "Michigan State University, Neuroscience",
+      value: "Michigan State University — B.S. Neuroscience (Expected 2027)",
+    },
+    {
+      label: "Relevant Coursework",
+      value: "Biostatistics, Neural Systems, Health Policy, Research Methods, Organic Chemistry",
     },
     {
       label: "Focus",
